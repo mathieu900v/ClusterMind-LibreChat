@@ -1,0 +1,20 @@
+name: Package Docker Images
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and Save Images
+        run: |
+          docker pull mongo:8.0.20
+          docker pull pgvector/pgvector:0.8.0-pg15-trixie
+          docker pull getmeili/meilisearch:v1.35.1
+          docker pull registry.librechat.ai/danny-avila/librechat-dev:latest
+          docker pull registry.librechat.ai/danny-avila/librechat-rag-api-dev-lite:latest
+          docker save -o librechat_images.tar mongo:8.0.20 pgvector/pgvector:0.8.0-pg15-trixie getmeili/meilisearch:v1.35.1 registry.librechat.ai/danny-avila/librechat-dev:latest registry.librechat.ai/danny-avila/librechat-rag-api-dev-lite:latest
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-images
+          path: librechat_images.tar
