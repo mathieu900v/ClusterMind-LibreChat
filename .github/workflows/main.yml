@@ -1,0 +1,24 @@
+name: Package SearXNG Docker Images
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Images
+        run: |
+          docker pull docker.io/library/redis:7-alpine
+          docker pull docker.io/searxng/searxng:latest
+
+      - name: Save Images to TAR
+        run: |
+          docker save -o searxng_images.tar \
+            docker.io/library/redis:7-alpine \
+            docker.io/searxng/searxng:latest
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: searxng-docker-images
+          path: searxng_images.tar
