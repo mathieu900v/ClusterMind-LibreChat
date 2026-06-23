@@ -1,0 +1,20 @@
+name: Export Docker Image to Tar
+
+on:
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
+jobs:
+  export-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Docker Image
+        run: docker pull mintplexlabs/anythingllm:latest
+
+      - name: Save Image as Tar
+        run: docker save -o anythingllm.tar mintplexlabs/anythingllm:latest
+
+      - name: Upload Tar as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: anythingllm-image
+          path: anythingllm.tar
