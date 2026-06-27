@@ -1,0 +1,23 @@
+name: Package Strix Halo Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Strix Halo Toolbox Image
+        run: |
+          docker pull docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv
+
+      - name: Save Image to TAR
+        run: |
+          docker save -o strix_toolbox.tar \
+            docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: strix-halo-docker-image
+          path: strix_toolbox.tar
