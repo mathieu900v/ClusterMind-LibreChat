@@ -1,4 +1,4 @@
-name: Package Jina Bridge Docker Image
+name: Package Pure Node Docker Image
 
 on:
   workflow_dispatch:
@@ -7,34 +7,17 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Create Inline Dockerfile
+      - name: Pull Base Node Image
         run: |
-          cat << 'EOF' > Dockerfile
-          FROM docker.io/library/node:18-alpine
-          WORKDIR /app
-          RUN npm install express axios
-          COPY ./jina-bridge/server.js /app/server.js
-          EXPOSE 8085
-          CMD ["node", "server.js"]
-          EOF
-
-      - name: Build Docker Image Locally
-        run: |
-          docker build -t jina-scraper-bridge:latest .
+          docker pull docker.io/library/node:18-alpine
 
       - name: Save Image to TAR
         run: |
-          docker save -o jina_bridge_image.tar jina-scraper-bridge:latest
+          docker save -o node_base_image.tar docker.io/library/node:18-alpine
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: jina-bridge-docker-image
-          path: jina_bridge_image.tar
-          retention-days: 31
+          name: node-alpine-docker-image
+          path: node_base_image.tar
+          retention-days: 3
